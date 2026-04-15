@@ -6,7 +6,7 @@ A full-stack MERN application for seamless hall/event booking with secure authen
 
 ## 🌐 Live Demo
 
-👉 *Add your deployed link here (after deployment)*
+https://bookit-lite-ggg03axdk-tanmay0405s-projects.vercel.app/
 
 ---
 
