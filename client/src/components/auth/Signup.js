@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import LoadingSpinner from "../LoadingSpinner";
 import { toast } from "react-toastify";
-import { institutions, InstitutionList, DepartmentList } from "../Institutions"; // Update the path as needed
+
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -29,55 +29,40 @@ const Signup = () => {
     setUser({ ...user, [name]: value });
     console.log(user)
   };
+const PostData = async (e) => {
+  e.preventDefault();
+  setIsLoading(true);
 
-  const PostData = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    const {
-      name,
-      email,
-      phone,
-      userType,
-      institution,
-      department,
-      adminKey,
-      password,
-      cpassword,
-    } = user;
-
-    try {
-      await axios.post(
-        `${process.env.REACT_APP_SERVER_URL}/register`,
-        {
-          name,
-          email,
-          phone,
-          userType,
-          institution,
-          department,
-          adminKey,
-          password,
-          cpassword,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      setIsLoading(false);
-      toast.success("Sign Up Successfull!");
-
-      navigate("/login");
-    } catch (error) {
-      if (error.response.status === 422 && error.response) {
-        setIsLoading(false);
-        const data = error.response.data;
-        setAuthStatus(data.error);
+  try {
+    await axios.post(
+      "http://localhost:5000/register",
+      {
+        name: user.name,
+        email: user.email,
+        phone: user.phone || "1234567890",
+        userType: "buyer",
+        institution: "NA",
+        department: "NA",
+        password: user.password,
+        cpassword: user.cpassword,
       }
+    );
+
+    setIsLoading(false);
+    toast.success("Signup Successful!");
+    navigate("/login");
+
+  } catch (error) {
+    setIsLoading(false);
+    console.log(error);
+
+    if (error.response) {
+      alert(error.response.data.error || "Signup failed");
+    } else {
+      alert("Server not responding");
     }
-  };
+  }
+};
 
   return (
     <>
@@ -158,13 +143,10 @@ const Signup = () => {
                   value={user.userType}
                   onChange={handleInputs}>
                   <option value="">Select</option>
-                  <option value="director">Director</option>
-                  <option value="faculty">HOD</option>
+                  <option value="buyer">Buyer</option>
+                  <option value="seller">Seller</option>
 
-                  {process.env.REACT_APP_HOD_FEATURE === "true" && (
-                    <option value="hod">HOD</option>
-                  )}
-                  <option value="faculty">Faculty</option>
+                  
 
                   {process.env.REACT_APP_ADMIN_SIGN_UP === "true" && (
                     <option value="admin">Admin</option>
@@ -197,61 +179,7 @@ const Signup = () => {
 
 
 
-{/* Institution Dropdown */}
-<div className="relative mb-4">
-  <label
-    htmlFor="institution"
-    className="leading-7 block uppercase tracking-wide text-gray-700 text-xs font-bold"
-  >
-    Institution
-  </label>
-  <select
-    value={user.institution}
-    onChange={handleInputs}
-    id="institution"
-    name="institution"
-    className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-  >
-    <option value="">Select</option>
-    {Object.keys(InstitutionList).map((key) => (
-      <option key={key} value={key}>
-        {InstitutionList[key]}
-      </option>
-    ))}
-  </select>
-</div>
 
-{/* Department Dropdown */}
-{user.userType !== "director" && (
-  <>
-{user.institution && (
-  <div className="relative mb-4">
-    <label
-      htmlFor="department"
-      className="leading-7 block uppercase tracking-wide text-gray-700 text-xs font-bold"
-    >
-      Department
-    </label>
-    <select
-      value={user.department}
-      onChange={handleInputs}
-      id="department"
-      name="department"
-      className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-    >
-      <option value="">Select</option>
-      {institutions
-        .find((inst) => inst.name === InstitutionList[user.institution])
-        ?.departments.map((dept, index) => (
-          <option key={index} value={Object.keys(DepartmentList).find(key => DepartmentList[key] === dept)}>
-            {dept}
-          </option>
-        ))}
-    </select>
-  </div>
-)}
-  </>
-  )}
 
 
 {/* 

@@ -182,7 +182,7 @@ const BookingsHod = () => {
         // setBookingData({ ...bookingData });
       }
     } catch (error) {
-      if (error.response.status === 422 && error.response) {
+      if (error.response && error.response.status === 422) {
         const data = error.response.data;
         //consolelog(data.error);
         // window.alert(data.error);

@@ -54,12 +54,7 @@ const register = async (req, res,next) => {
       return res.status(422).json({ error: "Kindly provide a valid email address." });
     }
     
-    const UrbanNestEmailRegex = /@UrbanNest\.in$/;
-    const UrbanNestEduEmailRegex = /@UrbanNest\.edu\.in$/;
-
-    if (!UrbanNestEmailRegex.test(email) && !UrbanNestEduEmailRegex.test(email) ) {
-      return res.status(422).json({ error: "Kindly provide a email address associated with UrbanNest Institute" });
-    }
+   
     // Phone validation
     if (phone.length !== 10) {
       return res.status(422).json({ error: "Kindly enter a valid 10-digit phone number." });

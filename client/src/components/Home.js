@@ -13,6 +13,13 @@ const Home = () => {
       <h1 style={{ textAlign: "center", marginBottom: "30px",fontSize: "32px",fontWeight: "bold"}}>
         Discover Your Dream Property
     </h1>
+    <h2 style={{
+  textAlign: "center",
+  marginBottom: "20px",
+  color: "#4f46e5"
+}}>
+  Featured Properties
+</h2>
 
       <div
         style={{

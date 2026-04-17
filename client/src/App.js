@@ -50,6 +50,7 @@ const App = () => {
       // const token = tokenCookie ? tokenCookie.split("=")[1] : null;
       // const token = document.cookie.split(";").find((c) => c.trim().startsWith("jwtoken="));
       const token = (localStorage.getItem("jwtoken"))
+      const PORT = process.env.PORT || 5000;
 
       //consolelog(token); 
       // axios.defaults.headers.common["authorization"] = token.split("=")[1];;
@@ -72,6 +73,7 @@ const App = () => {
         
           <Route path="/" element={<Home />} />
           <Route path="/profile" element={<div style={{padding: "40px"}}>Profile Page</div>} />
+          <Route path="/properties" element={<Home />} />
           {/*<Route path="/contact" element={<Contact />} />*/}
           <Route path="/calendar" element={<CalendarView />} />
           <Route path="signup" element={<Signup />} />
@@ -121,5 +123,4 @@ const App = () => {
     </>
   );
 };
-
 export default App;

@@ -115,7 +115,7 @@ setIsLoading(true)
         setAuthStatus(data.error)
         //consolelog(data.error)
         // window.alert(data.error);
-      }else if (error.response.status === 422 && error.response) {
+      }else if (error.response && error.response.status === 422) {
         const data = error.response.data;
         setAuthStatus(data.error);
         //consolelog(data.error);

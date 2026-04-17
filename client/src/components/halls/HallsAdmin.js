@@ -113,7 +113,7 @@ const HallsAdmin = () => {
         // setBookingData({ ...bookingData });
       }
     } catch (error) {
-      if (error.response.status === 422 && error.response) {
+      if (error.response && error.response.status === 422) {
         const data = error.response.data;
         // setAuthStatus(data.error);
         // console.log(data.error);
