@@ -275,19 +275,19 @@ const Signup = () => {
                       onChange={handleInputs}>
                       <option value="">Select</option>
                       <option value="AITR">
-                        Acropolis Institute of Technology and Research
+                        UrbanNest Institute of Technology and Research
                       </option>
                       <option value="AIMSR">
-                        Acropolis Institute of Management Studies & Research
+                        UrbanNest Institute of Management Studies & Research
                       </option>
                       <option value="AIPER">
-                        Acropolis Institute Of Pharmaceutical Education &
+                        UrbanNest Institute Of Pharmaceutical Education &
                         Research
                       </option>
                       <option value="AMR">
-                        Acropolis Faculty of Management and Research
+                        UrbanNest Faculty of Management and Research
                       </option>
-                      <option value="AILAW">Acropolis Institute of LAW</option>
+                      <option value="AILAW">UrbanNest Institute of LAW</option>
 
                       <option value="CDC">Career Development Cell</option>
                       <option value="AC">Acro Care</option>
@@ -310,7 +310,7 @@ const Signup = () => {
                         onChange={handleInputs}>
                         <option value="">Select</option>
                         <option value="AIPER">
-                          Acropolis Institute Of Pharmaceutical Education &
+                          UrbanNest Institute Of Pharmaceutical Education &
                           Research
                         </option>
                       </select>
@@ -377,7 +377,7 @@ const Signup = () => {
                         onChange={handleInputs}>
                         <option value="">Select</option>
                         <option value="AILAW">
-                          Acropolis Institute of LAW
+                          UrbanNest Institute of LAW
                         </option>
                       </select>
                     </div>
@@ -399,7 +399,7 @@ const Signup = () => {
                         onChange={handleInputs}>
                         <option value="">Select</option>
                         <option value="AMR">
-                          Acropolis Faculty of Management and Research
+                          UrbanNest Faculty of Management and Research
                         </option>
                       </select>
                     </div>
@@ -425,7 +425,7 @@ const Signup = () => {
                           Bachelor of Business Administration
                         </option>
                         <option value="AIMSR">
-                          Acropolis Institute of Management Studies & Research
+                          UrbanNest Institute of Management Studies & Research
                         </option>
                       </select>
                     </div>

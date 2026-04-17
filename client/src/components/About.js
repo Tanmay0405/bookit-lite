@@ -76,7 +76,7 @@ const AboutUpdateForm = () => {
         toast.success("Email Sent To Admin Successfull");
       }
     } catch (error) {
-      if (error.response.status === 400 && error.response) {
+      if (error.response && error.response.status === 400){
         const data = error.response.data;
         //consolelog(data.error)
       } else {
@@ -117,7 +117,9 @@ const AboutUpdateForm = () => {
           toastId: "Unauthorized",
         });
         navigate("/login");
-      }
+      }else {
+    console.log("Error:", error.message);
+  }
     }
   };
 
@@ -145,7 +147,7 @@ const AboutUpdateForm = () => {
         setOriginalData(userData);
       }
     } catch (error) {
-      if (error.response.status === 422 && error.response) {
+      if (error.response && error.response.status === 422) {
         const data = error.response.data;
         toast.error(data.error, {
         

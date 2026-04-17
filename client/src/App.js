@@ -4,9 +4,9 @@ import { createContext, useReducer } from "react";
 // importing components
 import axios from "axios"
 import Navbar from "./components/Navbar";
-// import Home from "./components/Home";
+import Home from "./components/Home";
 import About from "./components/About";
-import Contact from "./components/Contact";
+//import Contact from "./components/Contact";
 import Signup from "./components/auth/Signup";
 import Logout from "./components/auth/Logout";
 import Login from "./components/auth/Login";
@@ -67,14 +67,12 @@ const App = () => {
     <>
 
       <UserContext.Provider value={{ state, dispatch }}>
-
-
         <Navbar />
         <Routes>
-        <Route path="/" element={state.userType === "admin" ? <AdminDashboard /> : state.userType === "faculty" ? <FacultyDashboard /> : process.env.REACT_APP_HOD_FEATURE &&  state.userType === "hod" ? <HodDashboard />  : <Login />} />
-          {/* <Route path="/" element={<Home />} /> */}
-          <Route path="/profile" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
+        
+          <Route path="/" element={<Home />} />
+          <Route path="/profile" element={<div style={{padding: "40px"}}>Profile Page</div>} />
+          {/*<Route path="/contact" element={<Contact />} />*/}
           <Route path="/calendar" element={<CalendarView />} />
           <Route path="signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
