@@ -10,7 +10,8 @@ const jwt = require("jsonwebtoken")
 
 const register = async (req, res,next) => {
   try {
-    const { name, email,institution,department, phone, userType,adminKey, password, cpassword } = req.body;
+    
+    const { name, email, institution, department, phone, userType, adminKey, password, cpassword } = req.body;
   // console.log(process.env.ADMIN_KEY);
   const hodExist = await User.findOne({ department , userType: "hod" });
 
@@ -66,9 +67,9 @@ const register = async (req, res,next) => {
     }
   
     if (password !== cpassword) {
-      return res.status(422).json({ error: "Password and confirm password do not match" });
+    return res.status(422).json({ error: "Password mismatch" });
     }
-  
+
    
       
       const userExist = await User.findOne({ email });
@@ -78,14 +79,14 @@ const register = async (req, res,next) => {
        else {
         let user
         if (userType === "admin") {
-           user = new User({ name, email, phone, userType,adminKey,institution:"null",department:"null", password, cpassword });
+           user = new User({ name, email, phone, userType,adminKey,institution:"null",department:"null", password: password });
 
         }else if (userType === "director") {
-          user = new User({ name, email, phone, userType:"faculty",institution,department:"null", password, cpassword });
+          user = new User({ name, email, phone, userType:"faculty",institution,department:"null", password: password });
 
        }else{
         
-           user = new User({ name, email, phone, userType,institution,department,adminKey:"null" ,password, cpassword });
+           user = new User({ name, email, phone, userType,institution,department,adminKey:"null" ,password: password });
         }
         // console.log(user);
         // Perform additional validation or data processing here
@@ -516,53 +517,38 @@ const verifyEmail = async (req, res,next) => {
 
 
 
-const login = async (req, res,next) => {
-    // console.log(req.body);
-    
-    // res.json({message:"login success"})
-    try {
-      let token;
-      const { email, password } = req.body;
-      if (!email || !password) {
-        return res.status(400).json({ error: "Kindly complete all fields." });
-      }
-  
-      const userLogin = await User.findOne({ email });
-  
-      if (userLogin) {
-        const isMatch = await bcrypt.compare(password, userLogin.password);
-        token = await userLogin.generateAuthToken();
-        // console.log("this is login token" + token);
+const login = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
 
-        // res.cookie("jwtoken", token, {
-        //   maxAge: 900000,
-        //   // expires: new Date(Date.now() + 9000000),
-        //   path :"/",
-          
-        //   // domain:".onrender.com",
-        //   // expires: new Date(Date.now() + 900),
-          
-        //   httpOnly: true,
-        // })
-
-        // window.sessionStorage.setItem("jwtoken", data.token);
-       
-        if (!isMatch) {
-          res.status(400).json({ error: "Invalid Credentials" });
-        } else {
-          res.status(200).json({ userLogin, token: token, message: "User logged in successfully" });
-          // res.status(200)
-          // .send(userLogin).json({ message: "user login successfully" })
-        }
-      } else {
-        res.status(400).json({ error: "Invalid Credentials" });
-      }
-      
-    } catch (error) {
-        next(error);
+    if (!email || !password) {
+      return res.status(400).json({ error: "Kindly complete all fields." });
     }
-  }
 
+    const userLogin = await User.findOne({ email });
+
+    if (!userLogin) {
+      return res.status(400).json({ error: "Invalid Credentials" });
+    }
+
+    const isMatch = await bcrypt.compare(password, userLogin.password);
+
+    if (!isMatch) {
+      return res.status(400).json({ error: "Invalid Credentials" });
+    }
+
+    const token = await userLogin.generateAuthToken();
+
+    res.status(200).json({
+      userLogin,
+      token,
+      message: "User logged in successfully"
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
 
 
 

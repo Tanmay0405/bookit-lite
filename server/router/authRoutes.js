@@ -10,7 +10,7 @@ require("../DB/conn");
 router.use(cookieParser());
 
 router.post('/register', authController.register);
-router.post('/login', authController.login);
+router.post('/signin', authController.login);
 router.post('/passwordLink', authController.passwordLink);
 router.get('/forgotPassword/:id/:token', authController.forgotPassword);
 router.post('/:id/:token', authController.setNewPassword);

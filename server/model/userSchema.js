@@ -5,11 +5,11 @@ const jwt = require("jsonwebtoken");
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    require: true,
+    required: true,
   },
   email: {
     type: String,
-    require: true,
+    required: true,
   },
   institution:{
     type: String,
@@ -21,23 +21,19 @@ const userSchema = new mongoose.Schema({
   },
   phone: {
     type: Number,
-    require: true,
+    required: true,
   },
   userType: {
     type: String,
-    require: true,
+    required: true,
   },
   adminKey: {
     type: String,
-    require: true,
+    required: true,
   },
   password: {
     type: String,
-    require: true,
-  },
-  cpassword: {
-    type: String,
-    require: true,
+    required: true,
   },
   date: {
     type: Date,
@@ -47,19 +43,19 @@ const userSchema = new mongoose.Schema({
   //   {
   //     name: {
   //       type: String,
-  //       require: true,
+  //       required: true,
   //     },
   //     email: {
   //       type: String,
-  //       require: true,
+  //       required: true,
   //     },
   //     phone: {
   //       type: Number,
-  //       require: true,
+  //       required: true,
   //     },
   //     message: {
   //       type: String,
-  //       require: true,
+  //       required: true,
   //     },
   //   },
   // ],
@@ -67,7 +63,7 @@ const userSchema = new mongoose.Schema({
     {
       token: {
         type: String,
-        require: true,
+        required: true,
       },
     },
   ],
@@ -85,7 +81,7 @@ const userSchema = new mongoose.Schema({
 userSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
     this.password = await bcrypt.hash(this.password, 12);
-    this.cpassword = await bcrypt.hash(this.password, 12);
+    //this.cpassword = await bcrypt.hash(this.password, 12);
   }
   next();
 });
