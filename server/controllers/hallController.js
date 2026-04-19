@@ -22,13 +22,32 @@ const createHall = async (req, res, next) => {
 
 const getHalls = async (req, res, next) => {
   try {
-    const halls = await Hall.find();
-    res.json({ halls });
+    const { search, minCapacity, maxCapacity } = req.query;
+
+    let filter = {};
+
+    if (search) {
+      filter.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { location: { $regex: search, $options: "i" } }
+      ];
+    }
+
+
+    if (minCapacity || maxCapacity) {
+      filter.capacity = {};
+      if (minCapacity) filter.capacity.$gte = Number(minCapacity);
+      if (maxCapacity) filter.capacity.$lte = Number(maxCapacity);
+    }
+
+    const halls = await Hall.find(filter);
+
+    res.status(200).json({ halls });
+
   } catch (error) {
     next(error);
   }
 };
-
 const getHallById = async (req, res, next) => {
   try {
     const { hallId } = req.params;

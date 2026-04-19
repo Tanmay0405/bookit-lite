@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate} from "react-router-dom"
-import axios from 'axios';
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import LoadingSpinner from "../LoadingSpinner";
 
 // import BookingForm from "./BookingForm";
@@ -9,17 +9,23 @@ const Halls = () => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-
+  const [search, setSearch] = useState("");
+  const [minCapacity, setMinCapacity] = useState("");
+  const [maxCapacity, setMaxCapacity] = useState("");
 
   const getHallsData = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/halls`, {
-        withCredentials: true, // include credentials in the request
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        }
-      });
+      const response = await axios.get(
+        `${process.env.REACT_APP_SERVER_URL}/halls`,
+        {
+          params: {
+            search,
+            minCapacity,
+            maxCapacity,
+          },
+          withCredentials: true,
+        },
+      );
 
       const data = response.data;
       // console.log(data);
@@ -35,18 +41,14 @@ const Halls = () => {
     }
   };
 
-
-
   useEffect(() => {
-
     getHallsData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search, minCapacity, maxCapacity]);
 
   const handleBookingClick = (hallId, hallName) => {
-    navigate(`/bookingForm/${hallId}/${hallName}`)
+    navigate(`/bookingForm/${hallId}/${hallName}`);
   };
-
 
   // const hallId =userData.hallId
   // const hallName = userData.hallName
@@ -56,29 +58,50 @@ const Halls = () => {
 
   // };
 
-
   // const handleBookingClick = () => {
   //   sendData(data);
   // };
 
-
   return (
-<>{isLoading ? (
-          <LoadingSpinner />
-        ) : 
-    <div className="mt-6 min-h-screen"> 
-    
-    <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-3xl xl:text-3xl text-center text-gray-800 font-black leading-7 ml-3 md:leading-10">
-   Available <span className="text-indigo-700"> Halls</span>  </h1>
+    <>
+      {isLoading ? (
+        <LoadingSpinner />
+      ) : (
+        <div className="mt-6 min-h-screen">
+          <div className="flex flex-wrap gap-4 mb-6 justify-center">
+            <input
+              type="text"
+              placeholder="Search halls..."
+              className="border px-3 py-2 rounded"
+              onChange={(e) => setSearch(e.target.value)}
+            />
 
-      {Array.isArray(userData) && userData.length > 0 ? (
-        userData.map((hall) => (
-          <div key={hall._id} className="my-2 ">
-            <div className="flex w-full items-center justify-center">
-              <div className="w-full rounded-xl p-12 shadow-2xl shadow-blue-200 md:w-8/12 lg:w-8/12 bg-white">
+            <input
+              type="number"
+              placeholder="Min Capacity"
+              className="border px-3 py-2 rounded"
+              onChange={(e) => setMinCapacity(e.target.value)}
+            />
 
-                <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-                  {/* <div className="grid-cols-1 lg:col-span-3">
+            <input
+              type="number"
+              placeholder="Max Capacity"
+              className="border px-3 py-2 rounded"
+              onChange={(e) => setMaxCapacity(e.target.value)}
+            />
+          </div>
+
+          <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-3xl xl:text-3xl text-center text-gray-800 font-black leading-7 ml-3 md:leading-10">
+            Available <span className="text-indigo-700"> Halls</span>{" "}
+          </h1>
+
+          {Array.isArray(userData) && userData.length > 0 ? (
+            userData.map((hall) => (
+              <div key={hall._id} className="my-2 ">
+                <div className="flex w-full items-center justify-center">
+                  <div className="w-full rounded-xl p-12 shadow-2xl shadow-blue-200 md:w-8/12 lg:w-8/12 bg-white">
+                    <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+                      {/* <div className="grid-cols-1 lg:col-span-3">
                     <div className="mx-auto flex h-[90px] w-[90px] items-center justify-center rounded-full bg-blue-100 p-4">
                       <svg
                         id="logo-39"
@@ -110,14 +133,16 @@ const Halls = () => {
                     </div>
                   </div> */}
 
-                  <div className="col-span-1 lg:col-span-9">
-                    <div className="text-center lg:text-left">
-                      <h2 className="text-2xl font-bold text-zinc-700">{hall.name}</h2>
-                      {/* <p className="mt-2 text-l font-semibold text-zinc-700">{hall.location}</p> */}
-                      {/* <p className="mt-4 text-zinc-500">I am a Front End Developer and UI/UX Designer</p> */}
-                    </div>
+                      <div className="col-span-1 lg:col-span-9">
+                        <div className="text-center lg:text-left">
+                          <h2 className="text-2xl font-bold text-zinc-700">
+                            {hall.name}
+                          </h2>
+                          {/* <p className="mt-2 text-l font-semibold text-zinc-700">{hall.location}</p> */}
+                          {/* <p className="mt-4 text-zinc-500">I am a Front End Developer and UI/UX Designer</p> */}
+                        </div>
 
-                    {/* <div className="mt-6 grid grid-cols-2 gap-6 text-center lg:text-left">
+                        {/* <div className="mt-6 grid grid-cols-2 gap-6 text-center lg:text-left">
                       <div>
                         <p className="font-bold text-zinc-700">Hall Id</p>
                       </div>
@@ -127,8 +152,7 @@ const Halls = () => {
                       </div>
                     </div> */}
 
-
-                    {/* <div className="mt-6 grid grid-cols-2 gap-6 text-center lg:text-left">
+                        {/* <div className="mt-6 grid grid-cols-2 gap-6 text-center lg:text-left">
                 <div>
                   <p className="font-bold text-zinc-700">Name</p>
                 </div>
@@ -138,85 +162,84 @@ const Halls = () => {
                 </div>
               </div> */}
 
+                        <div className="mt-6 grid grid-cols-2 gap-6 text-center lg:text-left">
+                          <div>
+                            <p className="font-bold text-zinc-700">Location</p>
+                          </div>
 
-                    <div className="mt-6 grid grid-cols-2 gap-6 text-center lg:text-left">
-                      <div>
-                        <p className="font-bold text-zinc-700">Location</p>
-                      </div>
+                          <div>
+                            <p className="text-m font-semibold text-zinc-700">
+                              {hall.location}
+                            </p>
+                          </div>
+                        </div>
 
-                      <div>
-                        <p className="text-m font-semibold text-zinc-700">{hall.location}</p>
-                      </div>
-                    </div>
+                        <div className="mt-6 grid grid-cols-2 gap-6 text-center lg:text-left">
+                          <div>
+                            <p className="font-bold text-zinc-700">Capacity</p>
+                          </div>
 
+                          <div>
+                            <p className="text-m font-semibold text-zinc-700">
+                              {hall.capacity}
+                            </p>
+                          </div>
+                        </div>
 
+                        <div className="mt-6 grid grid-cols-2 gap-6 text-center lg:text-left">
+                          <div>
+                            <p className="font-bold text-zinc-700">Amenities</p>
+                          </div>
 
-                    <div className="mt-6 grid grid-cols-2 gap-6 text-center lg:text-left">
-                      <div>
-                        <p className="font-bold text-zinc-700">Capacity</p>
-                      </div>
+                          <div>
+                            <p className="text-m font-semibold text-zinc-700">
+                              {hall.amenities}
+                            </p>
+                          </div>
+                        </div>
 
-                      <div>
-                        <p className="text-m font-semibold text-zinc-700">{hall.capacity}</p>
-                      </div>
-                    </div>
+                        <div className="mt-6 grid grid-cols-2 gap-6 text-center lg:text-left">
+                          <div>
+                            <p className="font-bold text-zinc-700">
+                              Description
+                            </p>
+                          </div>
 
-                    <div className="mt-6 grid grid-cols-2 gap-6 text-center lg:text-left">
-                      <div>
-                        <p className="font-bold text-zinc-700">Amenities</p>
-                      </div>
+                          <div>
+                            <p className="text-m font-semibold text-zinc-700">
+                              {hall.description}
+                            </p>
+                          </div>
+                        </div>
 
-                      <div>
-                        <p className="text-m font-semibold text-zinc-700">{hall.amenities}</p>
-                      </div>
-                    </div>
-
-                    <div className="mt-6 grid grid-cols-2 gap-6 text-center lg:text-left">
-                      <div>
-                        <p className="font-bold text-zinc-700">Description</p>
-                      </div>
-
-                      <div>
-                        <p className="text-m font-semibold text-zinc-700">{hall.description}</p>
-                      </div>
-                    </div>
-
-
-
-
-
-
-
-
-
-
-                    <div className="mt-6 grid grid-cols-2 gap-4">
-                      {/* <Link to={`/bookingForm`}> */}
-                      <button className="w-full rounded-xl border-2 border-blue-500 bg-white px-3 py-2 font-semibold text-blue-500 hover:bg-blue-500 hover:text-white"
-                        onClick={() => handleBookingClick(hall._id, hall.name)}
-                      >
-                        Book Now
-                      </button>
-                      {/* </Link> */}
-                      {/* <button className="w-full rounded-xl border-2 border-blue-500 bg-white px-3 py-2 font-semibold text-blue-500 hover:bg-blue-500 hover:text-white">
+                        <div className="mt-6 grid grid-cols-2 gap-4">
+                          {/* <Link to={`/bookingForm`}> */}
+                          <button
+                            className="w-full rounded-xl border-2 border-blue-500 bg-white px-3 py-2 font-semibold text-blue-500 hover:bg-blue-500 hover:text-white"
+                            onClick={() =>
+                              handleBookingClick(hall._id, hall.name)
+                            }
+                          >
+                            Book Now
+                          </button>
+                          {/* </Link> */}
+                          {/* <button className="w-full rounded-xl border-2 border-blue-500 bg-white px-3 py-2 font-semibold text-blue-500 hover:bg-blue-500 hover:text-white">
                   View Profile
                 </button> */}
+                        </div>
+                      </div>
                     </div>
-
-
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        ))
-      ) : (
-        <h2 className="text-2xl font-bold text-zinc-700  text-center mt-10">No halls found.</h2>
-
+            ))
+          ) : (
+            <h2 className="text-2xl font-bold text-zinc-700  text-center mt-10">
+              No halls found.
+            </h2>
+          )}
+        </div>
       )}
-
-      </div>
-}
     </>
   );
 };
