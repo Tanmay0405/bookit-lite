@@ -20,7 +20,7 @@ const Home = () => {
         console.log(err);
       }
     };
-
+// improved UI structure for property cards
     fetchData();
   }, []);
   return (
