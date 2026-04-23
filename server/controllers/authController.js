@@ -519,19 +519,24 @@ const verifyEmail = async (req, res,next) => {
 
 const login = async (req, res, next) => {
   try {
+    console.log("LOGIN API HIT"); // 🔥 add this
+
     const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({ error: "Kindly complete all fields." });
-    }
+    console.log("Email:", email);
+    console.log("Password:", password);
 
     const userLogin = await User.findOne({ email });
+
+    console.log("User found:", userLogin); // 🔥
 
     if (!userLogin) {
       return res.status(400).json({ error: "Invalid Credentials" });
     }
 
     const isMatch = await bcrypt.compare(password, userLogin.password);
+
+    console.log("Password match:", isMatch); // 🔥
 
     if (!isMatch) {
       return res.status(400).json({ error: "Invalid Credentials" });
@@ -546,10 +551,10 @@ const login = async (req, res, next) => {
     });
 
   } catch (error) {
+    console.log("LOGIN ERROR:", error); // 🔥 VERY IMPORTANT
     next(error);
   }
 };
-
 
 
 

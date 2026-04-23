@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { UserContext } from "./../../App";
+import { UserContext } from "../../App";
 import LoadingSpinner from "../LoadingSpinner";
 import { toast } from "react-toastify";
 
@@ -15,49 +15,41 @@ const Login = () => {
   const [authStatus, setAuthStatus] = useState("");
 
   const loginUser = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
+
+    console.log("LOGIN FUNCTION RUNNING");
+
     setIsLoading(true);
 
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_SERVER_URL}/login`,
-        { email, password },
-        {
-          withCredentials: true,
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axios.post("http://localhost:5000/login", {
+        email,
+        password,
+      });
 
       const data = response.data;
 
+      console.log("SUCCESS:", data);
+
       localStorage.setItem("jwtoken", data.token);
+      localStorage.setItem("userId", data.userLogin._id);
 
       dispatch({ type: "USER", payload: true });
 
-      if (data.userLogin.userType === "admin") {
-        dispatch({ type: "USER_TYPE", payload: "admin" });
-      } else if (data.userLogin.userType === "hod") {
-        dispatch({ type: "USER_TYPE", payload: "hod" });
-      } else {
-        dispatch({ type: "USER_TYPE", payload: "faculty" });
-      }
-
-      localStorage.setItem("userId", data.userLogin._id);
       toast.success("Login Successful");
-      setIsLoading(false);
 
+      setIsLoading(false);
       navigate("/");
     } catch (error) {
       setIsLoading(false);
 
-      if (error.response && error.response.status === 400) {
-        setAuthStatus(error.response.data?.error || "Invalid credentials");
+      if (error.response) {
+        setAuthStatus(error.response.data.error);
       } else {
-        setAuthStatus("Something went wrong");
+        setAuthStatus("Server error");
       }
+
+      console.log("ERROR:", error.response || error);
     }
   };
 
@@ -66,82 +58,47 @@ const Login = () => {
       {isLoading ? (
         <LoadingSpinner />
       ) : (
-        <section className="text-gray-600 body-font min-h-screen flex items-center justify-center bg-white">
-          <div className="lg:w-2/6 md:w-1/2 bg-white shadow-2xl shadow-blue-200 rounded-lg p-8 flex flex-col md:ml-auto md:mr-auto mt-10 md:mt-0">
-            <form method="POST" onSubmit={loginUser}>
-              <h3 className="text-3xl my-8 sm:text-4xl leading-normal font-extrabold tracking-tight text-gray-900">
-                Sign <span className="text-indigo-600">In</span>
-              </h3>
+        <section className="min-h-screen flex items-center justify-center">
+          <div className="bg-white p-8 shadow-lg rounded-lg w-80">
+            <h2 className="text-2xl mb-4 font-bold">Sign In</h2>
 
-              <div className="relative mb-4">
-                <label
-                  htmlFor="email"
-                  className="leading-7 block uppercase tracking-wide text-gray-700 text-xs font-bold"
-                >
-                  Email
-                </label>
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  id="email"
-                  name="email"
-                  placeholder="Email"
-                  className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                />
-              </div>
+            <input
+              type="email"
+              placeholder="Email"
+              className="border p-2 mb-3 w-full"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
 
-              <div className="relative mb-4">
-                <label
-                  htmlFor="password"
-                  className="leading-7 block uppercase tracking-wide text-gray-700 text-xs font-bold"
-                >
-                  Password
-                </label>
-                <input
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  type="password"
-                  id="password"
-                  name="password"
-                  placeholder="Password"
-                  className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                />
-              </div>
+            <input
+              type="password"
+              placeholder="Password"
+              className="border p-2 mb-3 w-full"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
 
-              {authStatus && (
-                <p className="text-s text-red-600 font-bold my-4">{authStatus}</p>
-              )}
+            {authStatus && (
+              <p className="text-red-500 text-sm mb-2">{authStatus}</p>
+            )}
 
-              <div className="my-4">
-                <Link
-                  to="/passwordReset"
-                  className="text-m font-bold hover:underline"
-                >
-                  Forgot Your Password?
-                </Link>
-              </div>
+            <button
+              type="button"
+              onClick={(e) => {
+                console.log("BUTTON CLICKED");
+                loginUser(e); // 🔥 THIS WAS MISSING
+              }}
+              className="bg-indigo-600 text-white px-4 py-2 rounded w-full"
+            >
+              Login
+            </button>
 
-              <div className="mx-auto w-fit">
-                <button
-                  type="submit"
-                  className="text-white bg-indigo-600 shadow focus:shadow-outline focus:outline-none border-0 py-2 px-10 font-bold hover:bg-indigo-800 rounded text-lg"
-                >
-                  Login
-                </button>
-              </div>
-
-              <div className="mt-4 text-center">
-                <p className="text-m">
-                  Don't have an account yet?{" "}
-                  <Link to="/signup" className="text-blue-600 hover:underline">
-                    Sign Up
-                  </Link>
-                </p>
-              </div>
-            </form>
+            <p className="mt-4 text-sm">
+              Don't have an account?{" "}
+              <Link to="/signup" className="text-blue-600">
+                Signup
+              </Link>
+            </p>
           </div>
         </section>
       )}

@@ -3,38 +3,45 @@ const User = require("../model/userSchema");
 
 const Authenticate = async (req, res, next) => {
   try {
-    // const token = req.cookies.jwtoken;
-    // const token = req.headers["authorization"];
-    const bearerHeader = req.headers["authorization"];
-    // console.log("bearerHeader:", bearerHeader);
+    const authHeader = req.headers.authorization;
 
-    const bearer = bearerHeader.split(" ");
-    const token = bearer[1];
-    // console.log("auth called");
+    // ✅ 1. Check header exists
+    if (!authHeader) {
+      return res.status(401).json({ error: "No token provided" });
+    }
 
-    // const token = req.sessionstotage.jwtoken;
-    // const token = window.sessionStorage.getItem('jwtoken');
-    // console.log(token);
-    const verifyTokens = jwt.verify(token, process.env.SECRET_KEY);
-    // console.log(verifyTokens);
+    // ✅ 2. Check format
+    const parts = authHeader.split(" ");
+    if (parts.length !== 2 || parts[0] !== "Bearer") {
+      return res.status(401).json({ error: "Invalid token format" });
+    }
+
+    const token = parts[1];
+
+    // ✅ 3. Verify token
+    const verifyToken = jwt.verify(token, process.env.SECRET_KEY);
+
+    // ✅ 4. Find user
     const rootUser = await User.findOne({
-      _id: verifyTokens._id,
+      _id: verifyToken._id,
       "tokens.token": token,
     });
 
-    // console.log(rootUser);
     if (!rootUser) {
-      throw new Error("user not found");}
-      
-      req.token = token;
+      return res.status(401).json({ error: "User not found" });
+    }
 
-      req.rootUser = rootUser;
-      req.userID = rootUser._id;
-      next();
-    
+    // ✅ 5. Attach to request
+    req.token = token;
+    req.rootUser = rootUser;
+    req.userID = rootUser._id;
+
+    next();
+
   } catch (error) {
-    res.status(401).send("unauthorized:No token provided");
-    // console.log(error);
+    console.log("AUTH ERROR:", error.message);
+
+    return res.status(401).json({ error: "Invalid or expired token" });
   }
 };
 

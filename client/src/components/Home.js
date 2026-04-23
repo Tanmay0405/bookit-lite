@@ -20,7 +20,7 @@ const Home = () => {
         console.log(err);
       }
     };
-// improved UI structure for property cards
+    // improved UI structure for property cards
     fetchData();
   }, []);
   return (
@@ -60,6 +60,7 @@ const Home = () => {
             <PropertyCard
               key={i}
               property={{
+                id: p._id,
                 name: p.name,
                 location: p.location,
                 price: p.capacity * 1000,

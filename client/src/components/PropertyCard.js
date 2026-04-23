@@ -1,6 +1,10 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const PropertyCard = ({ property }) => {
+
+  const navigate = useNavigate(); // ✅ correct place
+
   return (
     <div className="w-80 bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300">
       
@@ -32,7 +36,11 @@ const PropertyCard = ({ property }) => {
           <span>📐 1200 sqft</span>
         </div>
 
-        <button className="mt-4 w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition">
+        {/* 🔥 IMPORTANT PART */}
+        <button
+          onClick={() => navigate(`/property/${property.id}`)}
+          className="mt-4 w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition"
+        >
           View Details
         </button>
 
