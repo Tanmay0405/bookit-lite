@@ -1,32 +1,39 @@
-import React from 'react'
-import Halls from '../halls/Halls'
-import Events from '../bookings/Events'
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-const FacultyDashboard = () => {
+const BuyerDashboard = () => {
+  const [bookings, setBookings] = useState([]);
+
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/bookings");
+
+        setBookings(res.data.bookings);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchBookings();
+  }, []);
+
   return (
-    <>
+    <div style={{ padding: "40px" }}>
+      <h1>My Bookings</h1>
 
-
-<div className='mt-6 min-h-screen'>
-
-      <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-3xl xl:text-4xl text-center text-gray-800 font-black leading-7 ml-3 md:leading-10">
-        <span className="text-indigo-700">Dashboard</span> </h1>
-
-
-
-
-
-      <div className='mt-6 grid grid-flow-col col-auto	'>
-        <div >
-          <Halls />
-        </div>
-        <div >
-          <Events />
-        </div>
-      </div>
+      {bookings.length === 0 ? (
+        <p>No bookings yet</p>
+      ) : (
+        bookings.map((b) => (
+          <div key={b._id}>
+            <h3>{b.hallName}</h3>
+            <p>Date: {b.date}</p>
+          </div>
+        ))
+      )}
     </div>
-    </>
-  )
-}
+  );
+};
 
-export default FacultyDashboard
+export default BuyerDashboard;

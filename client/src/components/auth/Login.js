@@ -4,7 +4,6 @@ import axios from "axios";
 import { UserContext } from "../../App";
 import LoadingSpinner from "../LoadingSpinner";
 import { toast } from "react-toastify";
-
 const Login = () => {
   const { dispatch } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
@@ -31,15 +30,22 @@ const Login = () => {
 
       console.log("SUCCESS:", data);
 
+      // ✅ store data
       localStorage.setItem("jwtoken", data.token);
+      localStorage.setItem("user", JSON.stringify(data.userLogin));
       localStorage.setItem("userId", data.userLogin._id);
+      localStorage.setItem("userType", data.userLogin.userType);
+      localStorage.setItem("userEmail", data.userLogin.email);
+      
 
-      dispatch({ type: "USER", payload: true });
+      // ✅ update state
+      dispatch({ type: "USER", payload: data.userLogin });
+      dispatch({ type: "USER_TYPE", payload: data.userLogin.userType });
 
       toast.success("Login Successful");
 
       setIsLoading(false);
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       setIsLoading(false);
 

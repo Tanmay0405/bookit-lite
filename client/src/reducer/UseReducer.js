@@ -1,5 +1,3 @@
-
-
 const storedUser = localStorage.getItem("user");
 const storedUserType = localStorage.getItem("userType");
 
@@ -7,13 +5,14 @@ const storedUserType = localStorage.getItem("userType");
 //consolelog(storedUser);
 // const jwtoken = document.cookie.split(";").find(cookie => cookie.trim().startsWith("jwtoken="));
 
-
 // const jwtoken = Cookies.get("jwtoken");
 const jwtoken = localStorage.getItem("jwtoken");
 
 //consolelog(jwtoken);
-export const initialState = jwtoken  ? { user: JSON.parse(storedUser), userType: storedUserType } : { user: null, userType: null };
-
+export const initialState = {
+  user: storedUser ? JSON.parse(storedUser) : null,
+  userType: storedUserType || null,
+};
 
 // export const initialState = storedUser ? { user: JSON.parse(storedUser), userType:storedUserType} : { user: null, userType: null };
 
@@ -22,7 +21,7 @@ export const reducer = (state, action) => {
     case "USER":
       // store the user information in localStorage
       localStorage.setItem("user", JSON.stringify(action.payload));
-      return { ...state, user: action.payload } ;
+      return { ...state, user: action.payload };
     case "USER_TYPE":
       // store the user type in localStorage
       localStorage.setItem("userType", action.payload);
@@ -31,6 +30,3 @@ export const reducer = (state, action) => {
       return state;
   }
 };
-
-
-

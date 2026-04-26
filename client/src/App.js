@@ -18,6 +18,8 @@ import BookingsHod from "./components/bookings/BookingsHod";
 import BookingFaculty from "./components/bookings/BookingsFaculty";
 import Footer from "./components/Footer";
 import HallsAdmin from "./components/halls/HallsAdmin";
+import SellerDashboard from "./components/dashboard/SellerDashboard";
+import BuyerDashboard from "./components/dashboard/BuyerDashboard";
 import { initialState, reducer } from "./reducer/UseReducer";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -35,7 +37,6 @@ import { CalendarView } from "./components/CalendarView";
 export const UserContext = createContext();
 
 const App = () => {
-
   // ✅ INTERCEPTOR (runs once)
   useEffect(() => {
     const interceptor = axios.interceptors.request.use((req) => {
@@ -54,6 +55,20 @@ const App = () => {
   }, []);
 
   const [state, dispatch] = useReducer(reducer, initialState);
+  console.log("APP STATE:", state);
+
+  useEffect(() => {
+    const type = localStorage.getItem("userType");
+    const token = localStorage.getItem("jwtoken");
+
+    if (type) {
+      dispatch({ type: "USER_TYPE", payload: type });
+    }
+
+    if (token) {
+      dispatch({ type: "USER", payload: true });
+    }
+  }, []);
 
   return (
     <>
@@ -62,16 +77,33 @@ const App = () => {
 
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/profile" element={<div style={{ padding: "40px" }}>Profile Page</div>} />
+          <Route
+            path="/profile"
+            element={<div style={{ padding: "40px" }}>Profile Page</div>}
+          />
           <Route path="/properties" element={<Home />} />
           <Route path="/calendar" element={<CalendarView />} />
 
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<Logout />} />
-
+          <Route
+            path="/dashboard"
+            element={
+              state.userType === "admin" ? (
+                <SellerDashboard />
+              ) : state.userType === "faculty" ? (
+                <BuyerDashboard />
+              ) : (
+                <Unauthorized />
+              )
+            }
+          />
           <Route path="/passwordReset" element={<PasswordReset />} />
-          <Route path="/forgotPassword/:id/:token" element={<ForgotPassword />} />
+          <Route
+            path="/forgotPassword/:id/:token"
+            element={<ForgotPassword />}
+          />
           <Route path="/verifyEmail/:id/:token" element={<VerifySuccess />} />
 
           <Route path="/events" element={<Events />} />
@@ -84,12 +116,16 @@ const App = () => {
 
           <Route
             path="/halls/:hallId/:hallName"
-            element={state.userType === "admin" ? <HallsEdit /> : <Unauthorized />}
+            element={
+              state.userType === "admin" ? <HallsEdit /> : <Unauthorized />
+            }
           />
 
           <Route
             path="/hallForm"
-            element={state.userType === "admin" ? <HallForm /> : <Unauthorized />}
+            element={
+              state.userType === "admin" ? <HallForm /> : <Unauthorized />
+            }
           />
 
           <Route
@@ -99,7 +135,8 @@ const App = () => {
                 <BookingsAdmin />
               ) : state.userType === "faculty" ? (
                 <BookingFaculty />
-              ) : process.env.REACT_APP_HOD_FEATURE && state.userType === "hod" ? (
+              ) : process.env.REACT_APP_HOD_FEATURE &&
+                state.userType === "hod" ? (
                 <BookingsHod />
               ) : (
                 <Unauthorized />
@@ -112,7 +149,8 @@ const App = () => {
             element={
               state.userType === "admin" ? (
                 <BookingUpdateFrom />
-              ) : process.env.REACT_APP_HOD_FEATURE && state.userType === "hod" ? (
+              ) : process.env.REACT_APP_HOD_FEATURE &&
+                state.userType === "hod" ? (
                 <BookingUpdateFrom />
               ) : (
                 <Unauthorized />
@@ -120,7 +158,10 @@ const App = () => {
             }
           />
 
-          <Route path="/bookingForm/:hallId/:hallName" element={<BookingForm />} />
+          <Route
+            path="/bookingForm/:hallId/:hallName"
+            element={<BookingForm />}
+          />
           <Route path="/bookingsView/:bookingId" element={<BookingsView />} />
 
           <Route path="/*" element={<ErrorPage />} />
@@ -129,11 +170,7 @@ const App = () => {
         <Footer />
       </UserContext.Provider>
 
-      <ToastContainer
-        position="bottom-left"
-        autoClose={3000}
-        theme="light"
-      />
+      <ToastContainer position="bottom-left" autoClose={3000} theme="light" />
     </>
   );
 };
