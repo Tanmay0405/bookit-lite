@@ -12,6 +12,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [authStatus, setAuthStatus] = useState("");
+  
 
   const loginUser = async (e) => {
     if (e) e.preventDefault();
@@ -29,18 +30,19 @@ const Login = () => {
       const data = response.data;
 
       console.log("SUCCESS:", data);
+      const normalizedType = data.userLogin.userType.toLowerCase();
 
       // ✅ store data
       localStorage.setItem("jwtoken", data.token);
       localStorage.setItem("user", JSON.stringify(data.userLogin));
       localStorage.setItem("userId", data.userLogin._id);
-      localStorage.setItem("userType", data.userLogin.userType);
+      localStorage.setItem("userType", normalizedType);
       localStorage.setItem("userEmail", data.userLogin.email);
       
 
       // ✅ update state
       dispatch({ type: "USER", payload: data.userLogin });
-      dispatch({ type: "USER_TYPE", payload: data.userLogin.userType });
+      dispatch({ type: "USER_TYPE", payload: normalizedType });
 
       toast.success("Login Successful");
 

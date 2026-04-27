@@ -14,7 +14,6 @@ import ErrorPage from "./components/ErrorPage";
 import Halls from "./components/halls/Halls";
 import BookingForm from "./components/bookings/BookingForm";
 import BookingsAdmin from "./components/bookings/BookingsAdmin";
-import BookingsHod from "./components/bookings/BookingsHod";
 import BookingFaculty from "./components/bookings/BookingsFaculty";
 import Footer from "./components/Footer";
 import HallsAdmin from "./components/halls/HallsAdmin";
@@ -55,6 +54,7 @@ const App = () => {
   }, []);
 
   const [state, dispatch] = useReducer(reducer, initialState);
+  console.log("USER TYPE:", state.userType);
   console.log("APP STATE:", state);
 
   useEffect(() => {
@@ -90,9 +90,9 @@ const App = () => {
           <Route
             path="/dashboard"
             element={
-              state.userType === "admin" ? (
+              state.userType === "buyer" ? (
                 <SellerDashboard />
-              ) : state.userType === "faculty" ? (
+              ) : state.userType === "seller" ? (
                 <BuyerDashboard />
               ) : (
                 <Unauthorized />
@@ -131,19 +131,15 @@ const App = () => {
           <Route
             path="/bookings"
             element={
-              state.userType === "admin" ? (
+              state.userType === "seller" ? (
                 <BookingsAdmin />
-              ) : state.userType === "faculty" ? (
+              ) : state.userType === "buyer" ? (
                 <BookingFaculty />
-              ) : process.env.REACT_APP_HOD_FEATURE &&
-                state.userType === "hod" ? (
-                <BookingsHod />
               ) : (
                 <Unauthorized />
               )
             }
           />
-
           <Route
             path="/bookingsEdit/:bookingId"
             element={
