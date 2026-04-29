@@ -43,6 +43,8 @@ const App = () => {
 
       if (token) {
         req.headers.Authorization = `Bearer ${token}`;
+      } else {
+        delete req.headers.Authorization;
       }
 
       return req;
@@ -59,14 +61,14 @@ const App = () => {
 
   useEffect(() => {
     const type = localStorage.getItem("userType");
-    const token = localStorage.getItem("jwtoken");
+    const user = localStorage.getItem("user");
 
     if (type) {
       dispatch({ type: "USER_TYPE", payload: type });
     }
 
-    if (token) {
-      dispatch({ type: "USER", payload: true });
+    if (user) {
+      dispatch({ type: "USER", payload: JSON.parse(user) });
     }
   }, []);
 
@@ -90,9 +92,9 @@ const App = () => {
           <Route
             path="/dashboard"
             element={
-              state.userType === "buyer" ? (
+              state.userType === "seller" ? (
                 <SellerDashboard />
-              ) : state.userType === "seller" ? (
+              ) : state.userType === "buyer" ? (
                 <BuyerDashboard />
               ) : (
                 <Unauthorized />
@@ -111,20 +113,20 @@ const App = () => {
 
           <Route
             path="/halls"
-            element={state.userType === "admin" ? <HallsAdmin /> : <Halls />}
+            element={state.userType === "seller" ? <HallsAdmin /> : <Halls />}
           />
 
           <Route
             path="/halls/:hallId/:hallName"
             element={
-              state.userType === "admin" ? <HallsEdit /> : <Unauthorized />
+              state.userType === "seller" ? <HallsEdit /> : <Unauthorized />
             }
           />
 
           <Route
             path="/hallForm"
             element={
-              state.userType === "admin" ? <HallForm /> : <Unauthorized />
+              state.userType === "seller" ? <HallForm /> : <Unauthorized />
             }
           />
 
@@ -143,10 +145,10 @@ const App = () => {
           <Route
             path="/bookingsEdit/:bookingId"
             element={
-              state.userType === "admin" ? (
+              state.userType === "seller" ? (
                 <BookingUpdateFrom />
               ) : process.env.REACT_APP_HOD_FEATURE &&
-                state.userType === "hod" ? (
+                state.userType === "buyer" ? (
                 <BookingUpdateFrom />
               ) : (
                 <Unauthorized />

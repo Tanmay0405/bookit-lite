@@ -15,7 +15,7 @@ const HallForm = () => {
   const [hallData, setHallData] = useState({
     name:"",location:"",capacity:"",amenities:"",description:""
   });
-  const [emailVerified, setEmailVerified] = useState(false);
+  const [emailVerified, setEmailVerified] = useState(true);
     const[hallCreater,setHallCreater] = useState("")
 
 
@@ -72,7 +72,7 @@ const HallForm = () => {
 
  
   useEffect(() => {
-    userContact();
+    //userContact();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -135,7 +135,7 @@ const HallForm = () => {
   return (
 <>{isLoading ? (
           <LoadingSpinner />
-        )  : !emailVerified ? (
+        )  : false ? (
 
       
 

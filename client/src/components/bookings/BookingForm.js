@@ -12,7 +12,7 @@ import notVerified from "../../assets/notVerified.jpg";
 const BookingForm = () => {
   const navigate = useNavigate();
   const [authStatus, setAuthStatus] = useState("");
-  const [emailVerified, setEmailVerified] = useState(false);
+  const [emailVerified, setEmailVerified] = useState(true);
 
   const { hallId, hallName } = useParams();
   //consolelog(hallId);
